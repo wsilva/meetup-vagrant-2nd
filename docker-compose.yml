@@ -1,0 +1,37 @@
+proxy:
+    build: ./containers/proxy
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock
+    ports:
+        - "80:80"
+
+redis:
+    build: ./containers/redis
+    privileged: true
+    volumes:
+        - ./containers/redis:/data
+    ports:
+        - "6379:6379"
+    entrypoint: redis-server
+
+rabbit:
+    image: tutum/rabbitmq
+    environment:
+        - RABBITMQ_PASS=meetup
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+
+web:
+    build: ./containers/web
+    environment:
+        - VIRTUAL_HOST=meetup.inet
+    links:
+        - redis:redis.inet
+        - rabbit:rabbit.inet
+    privileged: true
+    volumes:
+        - ./meetup-app:/src
+    ports:
+        - "80"
+    entrypoint: /run.sh
