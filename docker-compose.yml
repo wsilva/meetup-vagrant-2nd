@@ -12,7 +12,7 @@ redis:
         - ./containers/redis:/data
     ports:
         - "6379:6379"
-    entrypoint: redis-server
+    entrypoint: ["redis-server"]
 
 rabbit:
     image: tutum/rabbitmq
@@ -34,4 +34,4 @@ web:
         - ./meetup-app:/src
     ports:
         - "80"
-    entrypoint: /run.sh
+    entrypoint: ["/run.sh"]
